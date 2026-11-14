@@ -116,9 +116,10 @@ class FaceEngine:
         return {
             "faces": 2 if extra_faces else 1,
             "frames_used": len(lives),
-            # Each model is averaged over the frames. "live" is the more doubtful
-            # model, so both must agree before a face counts as live.
-            "live": float(np.min(np.mean(lives, axis=0))),
+            # "live" is the average of the liveness models over all frames. On our
+            # samples the average separated real faces from phone screens; either
+            # model alone did not. A very low single model is still a veto (policy).
+            "live": float(np.mean(lives)),
             "live_mean": float(np.mean(lives)),
             "live_min": float(np.min(lives)),
             "live_models": [float(v) for v in np.mean(lives, axis=0)],

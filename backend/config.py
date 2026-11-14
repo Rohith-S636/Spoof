@@ -27,7 +27,8 @@ POLICY_KEY = os.environ.get("POLICY_KEY", "dev-only-change-me").encode()
 # ---- Decision thresholds (tune from the evaluation page) -------------------
 THRESHOLDS = {
     # liveness = probability the face is real, averaged over the frames
-    "live_pass": 0.80,      # at or above: treated as live
+    # Set on 14 Nov from 7 genuine and 10 phone-screen samples (see docs/HANDOFF.md).
+    "live_pass": 0.45,      # at or above: treated as live
     "live_spoof": 0.25,     # models together below this -> DENY
     "live_veto": 0.12,      # ANY single liveness model below this -> DENY (veto)
     # between the two: ask for a random head turn (a photo or replay cannot follow it)
@@ -37,10 +38,11 @@ THRESHOLDS = {
     "match_pass": 0.45,     # at or above: confident match
     "match_low": 0.363,     # below: unknown person -> DENY (OpenCV SFace default)
     # stricter values used while the kiosk is offline
-    "offline_live_pass": 0.90,
+    "offline_live_pass": 0.60,
     "offline_match_pass": 0.50,
     "min_face_px": 80,      # face narrower than this -> ask to move closer
-    "max_face_ratio": 0.55, # face taller than this share of the frame -> move back
+    "max_face_ratio": 0.68, # face taller than this share of the frame -> move back
+    "min_face_ratio": 0.42, # face must fill the oval: the models were tuned at this distance
 }
 
 STEPUP_TTL_S = 90           # how long a step-up request stays open

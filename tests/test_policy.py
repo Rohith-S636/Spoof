@@ -9,7 +9,7 @@ from policy import ALLOW, DENY, STEP_UP, Signals, check_turn, decide  # noqa: E4
 from schedule import DEFAULT_POLICY, check  # noqa: E402
 from store import totp, totp_ok  # noqa: E402
 
-GOOD = dict(faces=1, face_px=200, live=0.97, match=0.7, schedule="in")
+GOOD = dict(faces=1, face_px=200, face_ratio=0.5, live=0.97, match=0.7, schedule="in")
 
 
 def d(**kw):
@@ -29,7 +29,7 @@ def test_unknown_person_denied():
 
 
 def test_low_confidence_steps_up():
-    assert decide(Signals(**{**GOOD, "live": 0.6}), T) == (STEP_UP, "LIVENESS_UNSURE", "action")
+    assert decide(Signals(**{**GOOD, "live": 0.35}), T) == (STEP_UP, "LIVENESS_UNSURE", "action")
     assert d(match=0.4) == (STEP_UP, "LOW_CONFIDENCE")
 
 
@@ -47,7 +47,7 @@ def test_offline_never_allows_on_face_alone():
     assert d(online=False) == (STEP_UP, "OFFLINE_FALLBACK")
     assert d(online=False, policy_valid=False) == (DENY, "OFFLINE_NO_VALID_POLICY")
     assert d(online=False, zone_restricted=True) == (DENY, "OFFLINE_RESTRICTED_ZONE")
-    assert decide(Signals(**{**GOOD, "online": False, "live": 0.85}), T) == (STEP_UP, "LIVENESS_UNSURE", "totp")
+    assert decide(Signals(**{**GOOD, "online": False, "live": 0.5}), T) == (STEP_UP, "LIVENESS_UNSURE", "totp")
 
 
 def test_schedule_windows():

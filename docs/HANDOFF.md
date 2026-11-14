@@ -176,6 +176,46 @@ or combination rules again before that data exists.
 Still to do after that: head moves then code when both doubts apply; attack memory;
 decide on the light step from trial numbers; AWS central service; evidence screenshot.
 
+## Update at about 14:50: thresholds set from collected samples
+
+Samples (surroundings / texture, at face height as share of frame):
+- genuine, n=7, all at 0.52 to 0.55: averages 0.50 to 0.75; lowest single model 0.28.
+- phone screen, n=10: at 0.42 or closer (3 samples) averages 0.01 to 0.29; held
+  further away (7 samples, 0.30 to 0.39) averages up to 0.70.
+- video, n=1: 0.06 / 1.00.
+
+Changes: `live` is now the AVERAGE of the two models (was the lower one);
+`live_pass` 0.45; face must fill the oval (`min_face_ratio` 0.42, `max_face_ratio`
+0.68) or the kiosk asks to move closer/back; veto stays at 0.12; offline pass 0.60.
+
+Replaying the rule on the saved samples: genuine 7 of 7 ALLOW; screen 3 DENY and
+7 "move closer" (never allowed); video 1 DENY.
+
+Weak point: only 3 phone samples were close enough to be judged, and 1 video. The
+0.45 line sits just under the lowest genuine average (0.50). Collect 10 more phone
+photo and 10 video samples WITH THE PHONE FILLING THE OVAL, plus 10 more genuine,
+then re-check with `scripts/rescore.py`. These changes are not committed or pushed.
+
+## Update at about 15:30: phone VIDEO held close is NOT detected
+
+- Verified by looking at the saved frames: 17 attempts labelled "video" (14:55 to
+  14:56) are a real phone video held so close that the phone fills the camera view.
+  16 of 17 were ALLOWED, liveness 0.61 to 0.98 (both models high). The passive models
+  do not catch this. This is the main open security gap.
+- The "screen" label is contaminated after 15:04: those ALLOWs are live people tested
+  with the label left on. Do not use the screen numbers after 14:50 as attack results.
+  The clean early set is 3 close phone photos denied, 7 further away asked to move closer.
+- Two `TURN_FAILED:WRONG_DIRECTION` results at 15:01 and 15:06 are unexplained. If a
+  real person turning correctly gets this, swap the sign in `policy.check_turn`.
+- Page fix: `freshFrames` now uses only frames from the last 0.7 s, or grabs 4 new
+  ones at once. Before this the page could wait 1.5 s and report 2 to 4 s decision
+  times. Not yet checked in a browser.
+- Deck: `docs/Commit-and-Conquer-HID-Kiosk.pptx` (6 slides, states the video gap).
+- Options for the video gap, none built: (1) detect the phone itself (dark bezel bands
+  beside the face; can be tuned on the saved frames), (2) make the light-reflection
+  trial part of the decision after measuring it on real face vs phone, (3) require head
+  moves on every attempt (breaks the 2 s direct ALLOW).
+
 ## Next steps, in order
 
 1. **Camera check (10 min).** Open the page, enrol yourself, authenticate 5 times.

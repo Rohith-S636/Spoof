@@ -12,7 +12,7 @@ ALLOW, STEP_UP, DENY = "ALLOW", "REQUEST_VERIFICATION", "DENY"
 MESSAGES = {
     "NO_FACE": "No face found. Look at the camera and try again.",
     "MULTIPLE_FACES": "More than one face in view. One person at a time.",
-    "FACE_TOO_SMALL": "Move closer to the camera.",
+    "FACE_TOO_SMALL": "Move closer so your face fills the oval.",
     "FACE_TOO_CLOSE": "Move back a little so your whole head and shoulders show.",
     "SPOOF_DETECTED": "Presentation attack suspected (photo, screen or mask).",
     "UNKNOWN_IDENTITY": "Face does not match any enrolled person.",
@@ -49,7 +49,7 @@ def decide(s: Signals, t: dict) -> tuple[str, str, str | None]:
         return STEP_UP, "NO_FACE", "recapture"
     if s.faces > 1:
         return STEP_UP, "MULTIPLE_FACES", "recapture"
-    if s.face_px < t["min_face_px"]:
+    if s.face_px < t["min_face_px"] or s.face_ratio < t["min_face_ratio"]:
         return STEP_UP, "FACE_TOO_SMALL", "recapture"
     if s.face_ratio > t["max_face_ratio"]:
         return STEP_UP, "FACE_TOO_CLOSE", "recapture"

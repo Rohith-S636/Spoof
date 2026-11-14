@@ -3,6 +3,12 @@
 You need: this laptop with its camera, a phone, and about 25 minutes.
 Do the parts in order. Each step says what to do and what you should see.
 
+> Page layout note (updated 15:45): the page now has collapsible panels at the bottom.
+> **Enrol a person**, **Measured results** and **Test tools** open when clicked. The
+> Test label, Pretend time, Light challenge and "Collect 10 samples" are inside
+> **Test tools**. An amber chip at the top right shows whenever a test label or pretend
+> time is active. Full numbers for an attempt are under **All metrics for this attempt**.
+
 ## Part 0: Start it (1 minute)
 
 1. Open the Terminal in the project folder and run:
